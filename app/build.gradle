@@ -1,0 +1,51 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    /**默认-选项配置*/
+    defaultConfig {
+        applicationId rootProject.ext.applicationId
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+        ndk {
+            /*设置支持的SO库架构*/
+            abiFilters 'armeabi', 'armeabi-v7a', 'x86'
+        }
+    }
+    /**构建类型-配置*/
+    buildTypes {
+        debug {
+            //混淆
+            minifyEnabled false
+            //混淆文件
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            //混淆
+            minifyEnabled true
+            //混淆文件
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    /**构建时关闭错误或者警告提示 */
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    /** support */
+    compile 'com.android.support.constraint:constraint-layout:1.1.2'
+    compile "com.android.support:appcompat-v7:$rootProject.supportVersion"
+    /**仓库*/
+    /*butterknife*/
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    /*eventbus*/
+    compile 'org.greenrobot:eventbus:3.0.0'
+}
