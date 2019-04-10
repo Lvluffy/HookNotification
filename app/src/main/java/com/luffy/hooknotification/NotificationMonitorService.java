@@ -2,6 +2,7 @@ package com.luffy.hooknotification;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -41,6 +42,31 @@ public class NotificationMonitorService extends NotificationListenerService {
             String key = it.next();
             Object value = extras.get(key);
             Log.i("text", "key = " + key + "value = " + value);
+            if (key.equals("android.rebuild.applicationInfo")){
+                try {
+                    ApplicationInfo applicationInfo = (ApplicationInfo) value;
+                    Log.i("XSL_Test", applicationInfo.backupAgentName);
+                    Log.i("XSL_Test", applicationInfo.className);
+                    Log.i("XSL_Test", applicationInfo.dataDir);
+                    Log.i("XSL_Test", applicationInfo.deviceProtectedDataDir);
+                    Log.i("XSL_Test", applicationInfo.manageSpaceActivityName);
+                    Log.i("XSL_Test", applicationInfo.nativeLibraryDir);
+                    Log.i("XSL_Test", applicationInfo.permission);
+                    Log.i("XSL_Test", applicationInfo.processName);
+                    Log.i("XSL_Test", applicationInfo.publicSourceDir);
+                    Log.i("XSL_Test", applicationInfo.sourceDir);
+                    Log.i("XSL_Test", applicationInfo.taskAffinity);
+                    Log.i("XSL_Test", applicationInfo.name);
+                    Log.i("XSL_Test", applicationInfo.packageName);
+                    Log.i("XSL_Test", applicationInfo.sharedLibraryFiles.toString());
+                    Log.i("XSL_Test", applicationInfo.splitPublicSourceDirs.toString());
+                    Log.i("XSL_Test", applicationInfo.splitNames.toString());
+                    Log.i("XSL_Test", applicationInfo.splitSourceDirs.toString());
+                }catch (Exception e){
+
+                }
+
+            }
         }
 
         // 打印数据、显示数据
