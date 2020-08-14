@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         /**gradle*/
-        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.android.tools.build:gradle:3.2.0'
         /**github*/
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
         /**butterknife*/

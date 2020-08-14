@@ -1,17 +1,13 @@
 package com.luffy.hooknotification;
 
 import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.content.pm.ApplicationInfo;
-import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
-import org.greenrobot.eventbus.EventBus;
+import com.luffy.hooknotification.utils.BundleUtils;
 
-import java.util.Iterator;
-import java.util.Set;
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by lvlufei on 2019/3/12
@@ -21,85 +17,21 @@ import java.util.Set;
 @SuppressLint("NewApi")
 public class NotificationMonitorService extends NotificationListenerService {
 
+    public final String TAG = getClass().getSimpleName();
+
     // 在收到消息时触发
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
-        Bundle extras = sbn.getNotification().extras;
-        // 获取接收通知的时间
-        long l = sbn.getPostTime();
-        // 获取接收消息APP的包名
-        String notificationPkg = sbn.getPackageName();
-        // 获取接收消息的抬头
-        String notificationTitle = extras.getString(Notification.EXTRA_TITLE);
-        // 获取接收消息的内容
-        String notificationText = extras.getString(Notification.EXTRA_TEXT);
-
-
-        // 测试-拿到所有的数据
-        Set<String> stringSet = extras.keySet();
-        Iterator<String> it = stringSet.iterator();
-        while (it.hasNext()) {
-            String key = it.next();
-            Object value = extras.get(key);
-            Log.i("text", "key = " + key + "value = " + value);
-            if (key.equals("android.rebuild.applicationInfo")){
-                try {
-                    ApplicationInfo applicationInfo = (ApplicationInfo) value;
-                    Log.i("XSL_Test", applicationInfo.backupAgentName);
-                    Log.i("XSL_Test", applicationInfo.className);
-                    Log.i("XSL_Test", applicationInfo.dataDir);
-                    Log.i("XSL_Test", applicationInfo.deviceProtectedDataDir);
-                    Log.i("XSL_Test", applicationInfo.manageSpaceActivityName);
-                    Log.i("XSL_Test", applicationInfo.nativeLibraryDir);
-                    Log.i("XSL_Test", applicationInfo.permission);
-                    Log.i("XSL_Test", applicationInfo.processName);
-                    Log.i("XSL_Test", applicationInfo.publicSourceDir);
-                    Log.i("XSL_Test", applicationInfo.sourceDir);
-                    Log.i("XSL_Test", applicationInfo.taskAffinity);
-                    Log.i("XSL_Test", applicationInfo.name);
-                    Log.i("XSL_Test", applicationInfo.packageName);
-                    Log.i("XSL_Test", applicationInfo.sharedLibraryFiles.toString());
-                    Log.i("XSL_Test", applicationInfo.splitPublicSourceDirs.toString());
-                    Log.i("XSL_Test", applicationInfo.splitNames.toString());
-                    Log.i("XSL_Test", applicationInfo.splitSourceDirs.toString());
-                }catch (Exception e){
-
-                }
-
-            }
-        }
-
-        // 打印数据、显示数据
-        String log = "Notification Posted " + "time:" + l + "notificationPkg:" + notificationPkg + "notificationTitle:" + notificationTitle + "notificationText:" + notificationText;
-        Log.i("XSL_Test", log);
+        String log = BundleUtils.getInstance().printBundle(sbn.getNotification().extras);
+        Log.i(TAG, log);
         EventBus.getDefault().post(new MessageEvent(log + "\n"));
     }
 
     // 在删除消息时触发
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        Bundle extras = sbn.getNotification().extras;
-        // 获取接收通知的时间
-        long l = sbn.getPostTime();
-        // 获取接收消息APP的包名
-        String notificationPkg = sbn.getPackageName();
-        // 获取接收消息的抬头
-        String notificationTitle = extras.getString(Notification.EXTRA_TITLE);
-        // 获取接收消息的内容
-        String notificationText = extras.getString(Notification.EXTRA_TEXT);
-
-        // 测试-拿到所有的数据
-        Set<String> stringSet = extras.keySet();
-        Iterator<String> it = stringSet.iterator();
-        while (it.hasNext()) {
-            String key = it.next();
-            Object value = extras.get(key);
-            Log.i("text", "key = " + key + "value = " + value);
-        }
-
-        // 打印数据、显示数据
-        String log = "Notification removed " + "time:" + l + "notificationPkg:" + notificationPkg + "notificationTitle:" + notificationTitle + "notificationText:" + notificationText;
-        Log.i("XSL_Test", log);
+        String log = BundleUtils.getInstance().printBundle(sbn.getNotification().extras);
+        Log.i(TAG, log);
         EventBus.getDefault().post(new MessageEvent(log + "\n"));
     }
 }

@@ -1,14 +1,12 @@
 package com.luffy.hooknotification;
 
-import android.content.ComponentName;
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.luffy.hooknotification.utils.NotificationListenerServiceUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -54,20 +52,18 @@ public class MainActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.notification_monitor_on_btn:
                 // 通知栏监控器开关-打开
-                if (!isEnabled()) {
-                    startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+                if (NotificationListenerServiceUtils.getInstance().isNotificationListenerEnabled(this)) {
+                    Toast.makeText(getApplicationContext(), "监控器开关已打开", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast toast = Toast.makeText(getApplicationContext(), "监控器开关已打开", Toast.LENGTH_SHORT);
-                    toast.show();
+                    NotificationListenerServiceUtils.getInstance().openNotificationListenerSettings(this);
                 }
                 break;
             case R.id.notification_monitor_off_btn:
                 // 通知栏监控器开关-关闭
-                if (isEnabled()) {
-                    startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+                if (NotificationListenerServiceUtils.getInstance().isNotificationListenerEnabled(this)) {
+                    NotificationListenerServiceUtils.getInstance().openNotificationListenerSettings(this);
                 } else {
-                    Toast toast = Toast.makeText(getApplicationContext(), "监控器开关已关闭", Toast.LENGTH_SHORT);
-                    toast.show();
+                    Toast.makeText(getApplicationContext(), "监控器开关已关闭", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.clear_data:
@@ -81,27 +77,5 @@ public class MainActivity extends AppCompatActivity {
     public void onMessageEvent(MessageEvent event) {
         stringBuilder.append(event.message);
         text.setText(stringBuilder.toString());
-    }
-
-    /**
-     * 判断是否打开了通知监听权限
-     *
-     * @return
-     */
-    private boolean isEnabled() {
-        String pkgName = getPackageName();
-        final String flat = Settings.Secure.getString(getContentResolver(), "enabled_notification_listeners");
-        if (!TextUtils.isEmpty(flat)) {
-            final String[] names = flat.split(":");
-            for (int i = 0; i < names.length; i++) {
-                final ComponentName cn = ComponentName.unflattenFromString(names[i]);
-                if (cn != null) {
-                    if (TextUtils.equals(pkgName, cn.getPackageName())) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 }
